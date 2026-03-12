@@ -11,7 +11,11 @@ class DadoBiomedicoController extends Controller
 {
     public function index(Request $request)
     {
-        $query = DadoBiomedico::where('paciente_id', auth()->id());
+        $query = DadoBiomedico::where('paciente_id', auth()->id())->with(['medico', 'categoria']);
+
+        if ($request->filled('q')) {
+            $query->where('nome', 'like', '%' . trim((string) $request->input('q')) . '%');
+        }
 
         if ($request->filled('categoria_id')) {
             $query->where('categoria_id', $request->integer('categoria_id'));
@@ -21,7 +25,7 @@ class DadoBiomedicoController extends Controller
             $query->where('medico_id', $request->integer('medico_id'));
         }
 
-        $dados_biomedicos = $query->get();
+        $dados_biomedicos = $query->orderBy('nome')->paginate(10)->withQueryString();
         $categorias = Categoria::all();
         $medicos = Medico::all();
 

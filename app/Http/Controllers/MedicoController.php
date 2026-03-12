@@ -8,10 +8,27 @@ use Illuminate\Http\Request;
 
 class MedicoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $medicos = Medico::all();
-        return view('medico.index', compact('medicos'));
+        $query = Medico::query()->with('especialidade');
+
+        if ($request->filled('q')) {
+            $term = trim((string) $request->input('q'));
+            $query->where(function ($q) use ($term) {
+                $q->where('nome', 'like', '%' . $term . '%')
+                    ->orWhere('crm', 'like', '%' . $term . '%')
+                    ->orWhere('contato', 'like', '%' . $term . '%');
+            });
+        }
+
+        if ($request->filled('especialidade_id')) {
+            $query->where('especialidade_id', $request->integer('especialidade_id'));
+        }
+
+        $medicos = $query->orderBy('nome')->paginate(10)->withQueryString();
+        $especialidades = Especialidade::orderBy('nome')->get();
+
+        return view('medico.index', compact('medicos', 'especialidades'));
     }
 
     public function create()

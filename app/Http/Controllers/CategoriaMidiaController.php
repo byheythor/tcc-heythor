@@ -7,9 +7,15 @@ use Illuminate\Http\Request;
 
 class CategoriaMidiaController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categorias_midia = CategoriaMidia::all();
+        $query = CategoriaMidia::query();
+
+        if ($request->filled('q')) {
+            $query->where('nome', 'like', '%' . trim((string) $request->input('q')) . '%');
+        }
+
+        $categorias_midia = $query->orderBy('nome')->paginate(10)->withQueryString();
         return view('categoria_midia.index', compact('categorias_midia'));
     }
 

@@ -10,15 +10,23 @@ class MedicaoController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Medicao::whereHas('dado_biomedico', function ($q) {
+        $query = Medicao::with('dado_biomedico')->whereHas('dado_biomedico', function ($q) {
             $q->where('paciente_id', auth()->id());
         });
+
+        if ($request->filled('q')) {
+            $term = trim((string) $request->input('q'));
+            $query->where(function ($q) use ($term) {
+                $q->where('nome', 'like', '%' . $term . '%')
+                    ->orWhere('valor', 'like', '%' . $term . '%');
+            });
+        }
 
         if ($request->filled('dado_biomedico_id')) {
             $query->where('dado_biomedico_id', $request->integer('dado_biomedico_id'));
         }
 
-        $medicoes = $query->get();
+        $medicoes = $query->orderByDesc('data_hora')->paginate(10)->withQueryString();
         $dadosBiomedicos = DadoBiomedico::where('paciente_id', auth()->id())->get();
 
         return view('medicao.index', compact('medicoes', 'dadosBiomedicos'));

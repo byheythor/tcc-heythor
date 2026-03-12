@@ -12,15 +12,19 @@ class MidiaController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Midia::whereHas('dado_biomedico', function ($q) {
+        $query = Midia::with(['dado_biomedico', 'categoria_midia'])->whereHas('dado_biomedico', function ($q) {
             $q->where('paciente_id', auth()->id());
         });
+
+        if ($request->filled('q')) {
+            $query->where('tipo', 'like', '%' . trim((string) $request->input('q')) . '%');
+        }
 
         if ($request->filled('dado_biomedico_id')) {
             $query->where('dado_biomedico_id', $request->integer('dado_biomedico_id'));
         }
 
-        $midias = $query->get();
+        $midias = $query->orderByDesc('id')->paginate(10)->withQueryString();
         $dadosBiomedicos = DadoBiomedico::where('paciente_id', auth()->id())->get();
 
         return view('midia.index', compact('midias', 'dadosBiomedicos'));

@@ -7,9 +7,15 @@ use Illuminate\Http\Request;
 
 class EspecialidadeController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $especialidades = Especialidade::all();
+        $query = Especialidade::query();
+
+        if ($request->filled('q')) {
+            $query->where('nome', 'like', '%' . trim((string) $request->input('q')) . '%');
+        }
+
+        $especialidades = $query->orderBy('nome')->paginate(10)->withQueryString();
         return view('especialidade.index', compact('especialidades'));
     }
 
