@@ -50,7 +50,6 @@
                     <table class="table table-striped table-hover align-middle mb-0">
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Tipo</th>
                                 <th>Dado biomédico</th>
                                 <th>Categoria</th>
@@ -61,7 +60,6 @@
                         <tbody>
                             @forelse ($midias as $midia)
                                 <tr>
-                                    <td>{{ $midia->id }}</td>
                                     <td>{{ $midia->tipo ?: '-' }}</td>
                                     <td>{{ optional($midia->dado_biomedico)->nome ?: '-' }}</td>
                                     <td>{{ optional($midia->categoria_midia)->nome ?: '-' }}</td>
@@ -79,7 +77,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center py-4">Nenhuma mídia cadastrada.</td>
+                                    <td colspan="5" class="text-center py-4">Nenhuma mídia cadastrada.</td>
                                 </tr>
                             @endforelse
                         </tbody>

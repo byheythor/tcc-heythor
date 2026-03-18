@@ -8,6 +8,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MedicaoController;
 use App\Http\Controllers\MedicoController;
 use App\Http\Controllers\MidiaController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +19,8 @@ Auth::routes();
 Route::middleware('auth')->group(function () {
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     Route::get('/principal', [HomeController::class, 'principal'])->name('principal');
+    Route::get('/perfil', [ProfileController::class, 'show'])->name('profile.show');
+    Route::post('/perfil', [ProfileController::class, 'update'])->name('profile.update');
     Route::view('/teste', 'teste')->name('teste');
 
     Route::controller(CategoriaController::class)->prefix('categoria')->name('categoria.')->group(function () {

@@ -57,7 +57,9 @@
             <div class="d-none d-lg-flex social-links align-items-center">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="btn btn-sm btn-outline-light">Sair</button>
+                    <button type="submit" class="btn btn-sm btn-danger fw-semibold">
+                        <i class="bi bi-box-arrow-right me-1"></i>Sair
+                    </button>
                 </form>
             </div>
         </div>
@@ -75,6 +77,7 @@
             <nav id="navbar" class="navbar order-last order-lg-0">
                 <ul>
                     <li><a class="nav-link scrollto active" href="#hero">Início</a></li>
+                    <li><a class="nav-link" href="{{ route('profile.show') }}">Meu perfil</a></li>
                     <li class="dropdown"><a href="#"><span>Cadastros</span> <i class="bi bi-chevron-down"></i></a>
                         <ul>
                             <li><a class="scrollto" href="#services">Atalhos da página inicial</a></li>
@@ -84,7 +87,7 @@
                             <li><a href="{{ route('dado_biomedico.create') }}">Novo dado biomédico</a></li>
                             <li><a href="{{ route('categoria_midia.create') }}">Nova categoria de mídia</a></li>
                             <li><a href="{{ route('midia.create') }}">Nova mídia</a></li>
-                            <li><a class="scrollto" href="#appointment">Nova medição (appointment)</a></li>
+                            <li><a href="{{ route('medicao.create') }}">Nova medição (appointment)</a></li>
                         </ul>
                     </li>
                     <li class="dropdown"><a href="#"><span>Consultas</span> <i class="bi bi-chevron-down"></i></a>
@@ -207,19 +210,23 @@
                     <p>Registre uma nova medição para um dado biomédico já cadastrado.</p>
                 </div>
 
-                <form action="{{ route('medicao.store') }}" method="post" class="row g-3">
+                <form action="{{ route('medicao.store') }}" method="post" class="row g-3 align-items-end">
                     @csrf
-                    <div class="col-md-4 form-group">
+                    <div class="col-lg-3 col-md-6 form-group">
+                        <label for="nome" class="form-label">Nome da medição</label>
                         <input type="text" name="nome" class="form-control" id="nome" placeholder="Nome da medição" value="{{ old('nome') }}" required>
                     </div>
-                    <div class="col-md-4 form-group mt-3 mt-md-0">
+                    <div class="col-lg-3 col-md-6 form-group">
+                        <label for="valor" class="form-label">Valor</label>
                         <input type="text" class="form-control" name="valor" id="valor" placeholder="Valor" value="{{ old('valor') }}" required>
                     </div>
-                    <div class="col-md-4 form-group mt-3 mt-md-0">
+                    <div class="col-lg-3 col-md-6 form-group">
+                        <label for="data_hora" class="form-label">Data e hora</label>
                         <input type="datetime-local" class="form-control" name="data_hora" id="data_hora" value="{{ old('data_hora') }}" required>
                     </div>
 
-                    <div class="col-md-6 form-group mt-3">
+                    <div class="col-lg-3 col-md-6 form-group">
+                        <label for="dado_biomedico_id" class="form-label">Dado biomédico</label>
                         <select name="dado_biomedico_id" id="dado_biomedico_id" class="form-select" required>
                             <option value="">Selecione o dado biomédico</option>
                             @foreach ($dadosBiomedicos as $dado)
@@ -237,6 +244,51 @@
                         @endif
                     </div>
                 </form>
+
+                <div class="card border-0 shadow-sm mt-4">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0">Últimas medições</h5>
+                            <a href="{{ route('medicao.index') }}" class="btn btn-sm btn-outline-primary">Ver todas</a>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover align-middle mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>Valor</th>
+                                        <th>Data/Hora</th>
+                                        <th>Dado biomédico</th>
+                                        <th class="text-end" style="width: 180px;">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($medicoesRecentes as $medicao)
+                                        <tr>
+                                            <td>{{ $medicao->nome }}</td>
+                                            <td>{{ $medicao->valor }}</td>
+                                            <td>{{ optional($medicao->data_hora)->format('d/m/Y H:i') }}</td>
+                                            <td>{{ optional($medicao->dado_biomedico)->nome ?: '-' }}</td>
+                                            <td class="text-end">
+                                                <a href="{{ route('medicao.edit', $medicao->id) }}" class="btn btn-sm btn-outline-secondary">Editar</a>
+                                                <a href="{{ route('medicao.delete', $medicao->id) }}" class="btn btn-sm btn-outline-danger" onclick="return confirm('Confirma exclusão?')">Excluir</a>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="5" class="text-center py-4">Nenhuma medição registrada ainda.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mt-3">
+                            {{ $medicoesRecentes->links('pagination::bootstrap-5') }}
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
     </main>

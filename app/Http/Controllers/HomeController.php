@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DadoBiomedico;
+use App\Models\Medicao;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -30,7 +31,12 @@ class HomeController extends Controller
     public function principal()
     {
         $dadosBiomedicos = DadoBiomedico::where('paciente_id', auth()->id())->get();
+        $medicoesRecentes = Medicao::with('dado_biomedico')
+            ->whereHas('dado_biomedico', fn ($query) => $query->where('paciente_id', auth()->id()))
+            ->orderByDesc('data_hora')
+            ->paginate(8)
+            ->withQueryString();
 
-        return view('principal', compact('dadosBiomedicos'));
+        return view('principal', compact('dadosBiomedicos', 'medicoesRecentes'));
     }
 }

@@ -50,7 +50,6 @@
                     <table class="table table-striped table-hover align-middle mb-0">
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Nome</th>
                                 <th>CRM</th>
                                 <th>Contato</th>
@@ -61,7 +60,6 @@
                         <tbody>
                             @forelse ($medicos as $medico)
                                 <tr>
-                                    <td>{{ $medico->id }}</td>
                                     <td>{{ $medico->nome }}</td>
                                     <td>{{ $medico->crm ?: '-' }}</td>
                                     <td>{{ $medico->contato ?: '-' }}</td>
@@ -73,7 +71,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center py-4">Nenhum médico cadastrado.</td>
+                                    <td colspan="5" class="text-center py-4">Nenhum médico cadastrado.</td>
                                 </tr>
                             @endforelse
                         </tbody>

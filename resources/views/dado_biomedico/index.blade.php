@@ -55,7 +55,6 @@
                     <table class="table table-striped table-hover align-middle mb-0">
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Nome</th>
                                 <th>Valor referencial</th>
                                 <th>Unidade</th>
@@ -67,7 +66,6 @@
                         <tbody>
                             @forelse ($dados_biomedicos as $dado)
                                 <tr>
-                                    <td>{{ $dado->id }}</td>
                                     <td>{{ $dado->nome }}</td>
                                     <td>{{ $dado->valor_referencia }}</td>
                                     <td>{{ $dado->unidade_medida }}</td>
@@ -80,7 +78,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="text-center py-4">Nenhum dado biomédico cadastrado.</td>
+                                    <td colspan="6" class="text-center py-4">Nenhum dado biomédico cadastrado.</td>
                                 </tr>
                             @endforelse
                         </tbody>

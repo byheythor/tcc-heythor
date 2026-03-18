@@ -47,7 +47,6 @@
                     <table class="table table-striped table-hover align-middle mb-0">
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Nome</th>
                                 <th>Valor</th>
                                 <th>Data/Hora</th>
@@ -58,7 +57,6 @@
                         <tbody>
                             @forelse ($medicoes as $medicao)
                                 <tr>
-                                    <td>{{ $medicao->id }}</td>
                                     <td>{{ $medicao->nome }}</td>
                                     <td>{{ $medicao->valor }}</td>
                                     <td>{{ optional($medicao->data_hora)->format('d/m/Y H:i') }}</td>
@@ -70,7 +68,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="text-center py-4">Nenhuma medição cadastrada.</td>
+                                    <td colspan="5" class="text-center py-4">Nenhuma medição cadastrada.</td>
                                 </tr>
                             @endforelse
                         </tbody>

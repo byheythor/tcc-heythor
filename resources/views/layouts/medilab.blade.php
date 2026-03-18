@@ -42,6 +42,7 @@
             <nav id="navbar" class="navbar order-last order-lg-0">
                 <ul>
                     <li><a class="nav-link" href="{{ route('principal') }}">Início</a></li>
+                    <li><a class="nav-link" href="{{ route('profile.show') }}">Meu perfil</a></li>
                     <li class="dropdown">
                         <a href="#"><span>Cadastros</span> <i class="bi bi-chevron-down"></i></a>
                         <ul>
@@ -71,7 +72,9 @@
             </nav>
             <form method="POST" action="{{ route('logout') }}" class="ms-3">
                 @csrf
-                <button type="submit" class="appointment-btn border-0 bg-transparent">Sair</button>
+                <button type="submit" class="btn btn-danger fw-semibold px-3">
+                    <i class="bi bi-box-arrow-right me-1"></i>Sair
+                </button>
             </form>
         </div>
     </header>

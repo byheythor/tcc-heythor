@@ -39,7 +39,6 @@
                     <table class="table table-striped table-hover align-middle mb-0">
                         <thead>
                             <tr>
-                                <th>ID</th>
                                 <th>Nome</th>
                                 <th class="text-end" style="width: 200px;">Ações</th>
                             </tr>
@@ -47,7 +46,6 @@
                         <tbody>
                             @forelse ($categorias_midia as $categoria)
                                 <tr>
-                                    <td>{{ $categoria->id }}</td>
                                     <td>{{ $categoria->nome }}</td>
                                     <td class="text-end">
                                         <a href="{{ route('categoria_midia.edit', $categoria->id) }}" class="btn btn-sm btn-outline-secondary">Editar</a>
@@ -56,7 +54,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="3" class="text-center py-4">Nenhuma categoria de mídia cadastrada.</td>
+                                    <td colspan="2" class="text-center py-4">Nenhuma categoria de mídia cadastrada.</td>
                                 </tr>
                             @endforelse
                         </tbody>
