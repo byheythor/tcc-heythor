@@ -67,7 +67,7 @@
 
                     <div class="col-12">
                         <hr>
-                        <h5 class="mb-2">Alterar senha (opcional)</h5>
+                        <h5 class="mb-2">Alterar senha</h5>
                         <p class="small text-muted mb-0">Preencha apenas se quiser trocar a senha atual.</p>
                     </div>
 

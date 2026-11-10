@@ -1,7 +1,3 @@
-# Gerenciador Pessoal de Dados Biomédicos (Laravel)
-
-Sistema web para gerenciamento de dados biomédicos pessoais, com autenticação e CRUD de domínio médico.
-
 ## 1. Visão geral
 
 O sistema permite:
@@ -21,7 +17,6 @@ O sistema permite:
 - Node.js `18+` (ou `20+`)
 - NPM
 - Banco de dados:
-    - SQLite (recomendado para ambiente local rápido), ou
     - MySQL 8+
 
 Frameworks e libs principais:
@@ -79,18 +74,14 @@ A propriedade dos dados do usuário é controlada por `dado_biomedico.paciente_i
 - Módulos `medicao` e `midia` são filtrados via relacionamento com `dado_biomedico` do usuário logado.
 - Módulos de apoio (`categoria`, `especialidade`, `medico`, `categoria_midia`) são globais no sistema.
 
-## 5. Como executar localmente
+## 5. Execução local
 
 ### 5.1 Instalação
 
-Na pasta `gerenciador-dadosbiomedicos`:
-
-```bash
 composer install
 npm install
 cp .env.example .env
 php artisan key:generate
-```
 
 Ajuste no `.env` para desenvolvimento local:
 
@@ -101,34 +92,18 @@ CACHE_STORE=file
 QUEUE_CONNECTION=sync
 ```
 
-### 5.2 Banco com SQLite
+### 5.2 Banco com MySQL
 
-1. Garanta que exista o arquivo `database/database.sqlite`.
-2. No `.env`, configure:
-
-```env
-DB_CONNECTION=sqlite
-DB_DATABASE=database/database.sqlite
-```
-
-3. Rode as migrations:
-
-```bash
-php artisan migrate:fresh
-```
-
-### 5.3 Banco com MySQL
-
-1. Crie um banco vazio no MySQL (ex.: `gerenciador`).
+1. Crie um banco vazio no MySQL.
 2. Ajuste `.env`:
 
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
-DB_DATABASE=gerenciador
-DB_USERNAME=seu_usuario
-DB_PASSWORD=sua_senha
+DB_DATABASE=database
+DB_USERNAME=usuario
+DB_PASSWORD=senha
 ```
 
 3. Rode as migrations:
@@ -137,15 +112,7 @@ DB_PASSWORD=sua_senha
 php artisan migrate:fresh
 ```
 
-### 5.4 Storage de upload
-
-Necessário para visualização de anexos de mídia:
-
-```bash
-php artisan storage:link
-```
-
-### 5.5 Subir a aplicação
+### 5.3 Subir a aplicação
 
 ```bash
 php artisan serve
@@ -155,26 +122,7 @@ Acesse:
 
 - `http://127.0.0.1:8000`
 
-## 6. Fluxo de uso recomendado
-
-1. Registrar usuário (`/register`).
-2. Cadastrar especialidade.
-3. Cadastrar médico.
-4. Cadastrar categoria.
-5. Cadastrar dado biomédico.
-6. Cadastrar medição.
-7. Cadastrar categoria de mídia.
-8. Fazer upload de mídia.
-
-## 7. Comandos úteis
-
-```bash
-php artisan route:list
-php artisan optimize:clear
-php artisan test
-```
-
-## 8. Qualidade e validação
+## 6. Fluxo de uso recomendado/Qualidade e validação
 
 Checklist rápido de validação funcional:
 
@@ -182,31 +130,5 @@ Checklist rápido de validação funcional:
 2. Criar especialidade.
 3. Criar médico vinculado à especialidade.
 4. Criar categoria e dado biomédico.
-5. Registrar medição (appointment).
+5. Registrar medição.
 6. Criar categoria de mídia e enviar um anexo.
-7. Confirmar que dados de outro usuário não aparecem nas listagens de `dado_biomedico`, `medicao` e `midia`.
-
-Testes automatizados do projeto:
-
-- `tests/Feature/AuthAndCrudFlowTest.php`
-- `tests/Feature/ExampleTest.php`
-
-## 9. Observações importantes
-
-- Antes de entregar em produção, recomenda-se:
-    - adicionar seeders de dados iniciais;
-    - revisar autorização por policy;
-    - trocar rotas de exclusão para `DELETE` com CSRF.
-
-## 10. Responsável pelo projeto
-
-Para manutenção, priorizar leitura de:
-
-1. `README.md` (este arquivo)
-2. `docs/EXECUCAO_LOCAL.md`
-3. `docs/EXECUCAO_PRODUCAO.md`
-4. `docs/ESTRUTURA_BD.md`
-5. `database/migrations/`
-6. `app/Models/`
-7. `app/Http/Controllers/`
-8. `routes/web.php`

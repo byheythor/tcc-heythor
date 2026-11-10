@@ -87,7 +87,7 @@
                             <li><a href="{{ route('dado_biomedico.create') }}">Novo dado biomédico</a></li>
                             <li><a href="{{ route('categoria_midia.create') }}">Nova categoria de mídia</a></li>
                             <li><a href="{{ route('midia.create') }}">Nova mídia</a></li>
-                            <li><a href="{{ route('medicao.create') }}">Nova medição (appointment)</a></li>
+                            <li><a href="{{ route('medicao.create') }}">Nova medição    </a></li>
                         </ul>
                     </li>
                     <li class="dropdown"><a href="#"><span>Consultas</span> <i class="bi bi-chevron-down"></i></a>
@@ -105,7 +105,7 @@
                 <i class="bi bi-list mobile-nav-toggle"></i>
             </nav>
 
-            <a href="#appointment" class="appointment-btn scrollto"><span class="d-none d-md-inline">Make an Appointment</span></a>
+            <a href="#appointment" class="appointment-btn scrollto"><span class="d-none d-md-inline">Registrar medição</span></a>
         </div>
     </header>
 
@@ -141,7 +141,7 @@
                     <p>Use os atalhos abaixo para começar os cadastros.</p>
                 </div>
 
-                <h5 class="mb-3">Cadastros essenciais</h5>
+                <!--<h5 class="mb-3">Cadastros essenciais</h5>-->
                 <div class="row g-4 mb-4">
                     <div class="col-lg-4 col-md-6">
                         <div class="icon-box panel-card">
@@ -178,10 +178,7 @@
                             <a href="{{ route('dado_biomedico.create') }}" class="btn btn-primary">Inserir</a>
                         </div>
                     </div>
-                </div>
 
-                <h5 class="mb-3">Cadastros complementares</h5>
-                <div class="row g-4">
                     <div class="col-lg-4 col-md-6">
                         <div class="icon-box panel-card">
                             <div class="icon"><i class="fas fa-photo-video"></i></div>
@@ -200,13 +197,34 @@
                         </div>
                     </div>
                 </div>
+
+                <!--<h5 class="mb-3">Cadastros complementares</h5>
+                <div class="row g-4">
+                    <div class="col-lg-4 col-md-6">
+                        <div class="icon-box panel-card">
+                            <div class="icon"><i class="fas fa-photo-video"></i></div>
+                            <h4><a href="{{ route('categoria_midia.create') }}">Registrar Categoria de Mídia</a></h4>
+                            <p>Cadastre categorias para organizar anexos e exames.</p>
+                            <a href="{{ route('categoria_midia.create') }}" class="btn btn-primary">Inserir</a>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6">
+                        <div class="icon-box panel-card">
+                            <div class="icon"><i class="fas fa-file-medical"></i></div>
+                            <h4><a href="{{ route('midia.create') }}">Registrar nova Mídia</a></h4>
+                            <p>Faça upload de imagens e PDFs vinculados aos dados biomédicos.</p>
+                            <a href="{{ route('midia.create') }}" class="btn btn-primary">Inserir</a>
+                        </div>
+                    </div>
+                </div>-->
             </div>
         </section>
 
         <section id="appointment" class="appointment section-bg">
             <div class="container">
                 <div class="section-title">
-                    <h2>Make an Appointment</h2>
+                    <h2>Cadastrar medição</h2>
                     <p>Registre uma nova medição para um dado biomédico já cadastrado.</p>
                 </div>
 
