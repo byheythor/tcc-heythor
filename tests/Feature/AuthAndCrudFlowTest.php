@@ -43,6 +43,7 @@ class AuthAndCrudFlowTest extends TestCase
 
     public function test_authenticated_user_can_complete_core_crud_flow(): void
     {
+        Storage::fake('anexos');
         Storage::fake('public');
 
         $user = User::factory()->create();
@@ -99,7 +100,8 @@ class AuthAndCrudFlowTest extends TestCase
         ])->assertRedirect(route('midia.index'));
 
         $midia = Midia::latest('id')->firstOrFail();
-        Storage::disk('public')->assertExists($midia->anexo);
+        Storage::disk('anexos')->assertExists($midia->anexo);
+        Storage::disk('public')->assertMissing($midia->anexo);
     }
 
     public function test_medico_requires_especialidade(): void

@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
     use HasFactory;
+
     protected $table = 'users';
 
     protected $fillable = [
@@ -44,5 +45,25 @@ class User extends Authenticatable
     public function dadosBiomedicos(): HasMany
     {
         return $this->hasMany(DadoBiomedico::class, 'paciente_id');
+    }
+
+    public function categorias(): HasMany
+    {
+        return $this->hasMany(Categoria::class);
+    }
+
+    public function especialidades(): HasMany
+    {
+        return $this->hasMany(Especialidade::class);
+    }
+
+    public function medicos(): HasMany
+    {
+        return $this->hasMany(Medico::class);
+    }
+
+    public function categoriasMidia(): HasMany
+    {
+        return $this->hasMany(CategoriaMidia::class);
     }
 }

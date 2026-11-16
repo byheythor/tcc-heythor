@@ -72,12 +72,13 @@ php artisan migrate:fresh --force
 
 ## 6. Ajustes de aplicação
 ```bash
-php artisan storage:link
 php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 php artisan optimize
 ```
+
+Os anexos usam `storage/app/private/anexos`, fora da raiz pública, e não dependem de `storage:link`. Não exponha essa pasta por links ou aliases do servidor web.
 
 ## 7. Permissões (Linux)
 Ajustar usuário do servidor web (ex.: `www-data`):
@@ -139,12 +140,20 @@ php artisan view:cache
 php artisan optimize
 ```
 
+Ao adotar pela primeira vez o armazenamento privado em uma instalação existente, execute a transferência descrita na seção 5.4 do [README](../README.md) antes de reabrir o sistema. Recrie os caches de configuração e rotas após concluir a transferência. O comando `midias:proteger-anexos` deve terminar sem erros; arquivos faltantes ou conflitantes exigem resolução antes da liberação.
+
+Na atualização que individualiza os cadastros de apoio, faça backup antes de executar as migrações e mantenha os acessos pausados durante a mudança. Consulte a seção 5.5 do [README](../README.md) para o tratamento dos registros compartilhados e dos cadastros legados sem proprietário identificável.
+
 ## 10. Testes pós-deploy
+
 - Acessar `/login` e `/register`.
 - Criar usuário de teste.
 - Validar fluxo básico:
   - especialidade -> médico -> categoria -> dado biomédico -> medição -> mídia.
-- Verificar anexos de mídia abrindo via `storage`.
+- Verificar a abertura do anexo pela opção “Visualizar” com a conta proprietária.
+- Verificar o redirecionamento ao login sem sessão e HTTP 404 para outra conta na rota `/midia/{id}/anexo`.
+- Confirmar que os antigos endereços `/storage/midias/...` não disponibilizam arquivos após a transferência.
+- Conferir com duas contas que médicos, especialidades, categorias e categorias de mídia não aparecem nas listagens nem nos campos de seleção de outro usuário; tentativas de edição e exclusão por outra conta devem retornar HTTP 404.
 
 ## 11. Monitoramento e logs
 - Log Laravel: `storage/logs/laravel.log`
@@ -153,10 +162,11 @@ php artisan optimize
 
 ## 12. Backup e rollback
 - Backup diário do banco MySQL.
-- Backup de `storage/app/public` (anexos).
+- Backup de `storage/app/private/anexos` (anexos) e dos recursos públicos que a instalação utilizar.
 - Em rollback de release:
   - restaurar código da versão anterior;
   - restaurar backup do banco se necessário.
+- Versões anteriores à proteção dos anexos esperam arquivos públicos. Não restaure esses arquivos em `public` para contornar uma incompatibilidade; mantenha o acesso privado ao planejar o rollback.
 
 ## 13. Segurança mínima recomendada
 - Forçar HTTPS.

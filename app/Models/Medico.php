@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Medico extends Model
 {
     protected $table = 'medico';
+
     public $timestamps = false;
 
     protected $fillable = [
@@ -16,7 +17,13 @@ class Medico extends Model
         'crm',
         'contato',
         'especialidade_id',
+        'user_id',
     ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function especialidade(): BelongsTo
     {

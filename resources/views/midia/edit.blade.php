@@ -42,7 +42,7 @@
 
     @if ($midia->anexo)
         <div class="col-12">
-            <a href="{{ asset('storage/' . $midia->anexo) }}" target="_blank">Arquivo atual</a>
+            <a href="{{ route('midia.anexo', $midia->id) }}" target="_blank" rel="noopener">Arquivo atual</a>
         </div>
     @endif
 

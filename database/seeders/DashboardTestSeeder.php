@@ -2,11 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Categoria;
 use App\Models\DadoBiomedico;
-use App\Models\Especialidade;
 use App\Models\Medicao;
-use App\Models\Medico;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
@@ -30,14 +27,14 @@ class DashboardTestSeeder extends Seeder
             ]
         );
 
-        $cardiovascular = Categoria::firstOrCreate(['nome' => 'Cardiovascular']);
-        $metabolico = Categoria::firstOrCreate(['nome' => 'Metabólico']);
-        $antropometria = Categoria::firstOrCreate(['nome' => 'Antropometria']);
+        $cardiovascular = $paciente->categorias()->firstOrCreate(['nome' => 'Cardiovascular']);
+        $metabolico = $paciente->categorias()->firstOrCreate(['nome' => 'Metabólico']);
+        $antropometria = $paciente->categorias()->firstOrCreate(['nome' => 'Antropometria']);
 
-        $clinicaGeral = Especialidade::firstOrCreate(['nome' => 'Clínica geral']);
-        $cardiologia = Especialidade::firstOrCreate(['nome' => 'Cardiologia']);
+        $clinicaGeral = $paciente->especialidades()->firstOrCreate(['nome' => 'Clínica geral']);
+        $cardiologia = $paciente->especialidades()->firstOrCreate(['nome' => 'Cardiologia']);
 
-        $medicoClinico = Medico::firstOrCreate(
+        $medicoClinico = $paciente->medicos()->firstOrCreate(
             ['crm' => 'CRM-SP 123456'],
             [
                 'nome' => 'Dra. Ana Martins',
@@ -46,7 +43,7 @@ class DashboardTestSeeder extends Seeder
             ]
         );
 
-        $medicoCardio = Medico::firstOrCreate(
+        $medicoCardio = $paciente->medicos()->firstOrCreate(
             ['crm' => 'CRM-SP 654321'],
             [
                 'nome' => 'Dr. Bruno Lima',
@@ -120,7 +117,7 @@ class DashboardTestSeeder extends Seeder
 
             foreach ($dado['valores'] as $indiceValor => $valor) {
                 Medicao::create([
-                    'nome' => 'Medição de ' . $dado['nome'],
+                    'nome' => 'Medição de '.$dado['nome'],
                     'valor' => (string) $valor,
                     'dado_biomedico_id' => $dadoBiomedico->id,
                     'data_hora' => Carbon::now()

@@ -65,7 +65,7 @@
                                     <td>{{ optional($midia->categoria_midia)->nome ?: '-' }}</td>
                                     <td>
                                         @if ($midia->anexo)
-                                            <a href="{{ asset('storage/' . $midia->anexo) }}" target="_blank">Visualizar</a>
+                                            <a href="{{ route('midia.anexo', $midia->id) }}" target="_blank" rel="noopener">Visualizar</a>
                                         @else
                                             -
                                         @endif

@@ -39,7 +39,6 @@ DB_DATABASE=database/database.sqlite
 
 ```bash
 php artisan migrate:fresh
-php artisan storage:link
 php artisan serve
 ```
 
@@ -60,13 +59,22 @@ DB_PASSWORD=sua_senha
 
 ```bash
 php artisan migrate:fresh
-php artisan storage:link
 php artisan serve
 ```
 
 ## Acesso
 - URL: `http://127.0.0.1:8000`
 - Primeiro acesso: criar usuário em `/register`
+
+## Anexos privados
+
+Os arquivos enviados ficam em `storage/app/private/anexos/midias`. A opção “Visualizar” utiliza uma rota autenticada que permite a abertura apenas pelo proprietário do registro. Os anexos não precisam de `storage:link`.
+
+Ao atualizar uma instalação com anexos públicos, siga a sequência da seção 5.4 do [README](../README.md), usando `midias:proteger-anexos --dry-run` antes da transferência. Os caminhos registrados no banco são preservados. Não utilize `migrate:fresh` para atualizar um banco com dados existentes.
+
+## Cadastros de apoio por usuário
+
+Médicos, especialidades, categorias e categorias de mídia possuem proprietário. Ao atualizar uma instalação, faça backup e execute `php artisan migrate`, conforme a seção 5.5 do [README](../README.md). A migração preserva os vínculos existentes e separa os cadastros compartilhados em cópias por conta. Uma conta nova começa sem esses cadastros e pode criar os próprios.
 
 ## Comandos úteis
 ```bash

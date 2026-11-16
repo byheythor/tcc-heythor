@@ -79,6 +79,7 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(MidiaController::class)->prefix('midia')->name('midia.')->group(function () {
         Route::get('/', 'index')->name('index');
+        Route::get('/{id}/anexo', 'anexo')->whereNumber('id')->name('anexo');
         Route::get('/create', 'create')->name('create');
         Route::post('/create', 'store')->name('store');
         Route::get('/edit/{id}', 'edit')->name('edit');
