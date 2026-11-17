@@ -22,6 +22,7 @@
     <link href="{{ asset('assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
 
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/responsive.css') }}" rel="stylesheet">
 
     <style>
         .login-section {
@@ -42,7 +43,7 @@
     </style>
 </head>
 
-<body>
+<body class="app-shell auth-page">
     <div id="topbar" class="d-flex align-items-center fixed-top">
         <div class="container d-flex justify-content-between">
             <div class="contact-info d-flex align-items-center">
@@ -55,10 +56,10 @@
         <div class="container d-flex align-items-center">
             <h1 class="logo me-auto"><a href="{{ url('/') }}">Dados Biomédicos</a></h1>
             <nav id="navbar" class="navbar order-last order-lg-0">
-                <ul>
+                <ul id="navigation-links">
                     <li><a class="nav-link" href="{{ route('register') }}">Criar conta</a></li>
                 </ul>
-                <i class="bi bi-list mobile-nav-toggle"></i>
+                <button type="button" class="bi bi-list mobile-nav-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navigation-links"></button>
             </nav>
         </div>
     </header>
@@ -97,7 +98,7 @@
                                     <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
                                 </div>
 
-                                <div class="col-12 d-flex justify-content-between align-items-center">
+                                <div class="col-12 d-flex flex-wrap gap-2 justify-content-between align-items-center">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
                                         <label class="form-check-label" for="remember">Lembrar-me</label>

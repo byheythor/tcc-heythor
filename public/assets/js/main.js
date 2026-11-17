@@ -117,10 +117,31 @@
   /**
    * Mobile nav toggle
    */
-  on('click', '.mobile-nav-toggle', function(e) {
-    select('#navbar').classList.toggle('navbar-mobile')
-    this.classList.toggle('bi-list')
-    this.classList.toggle('bi-x')
+  const setMobileMenu = (open) => {
+    const navbar = select('#navbar')
+    const toggle = select('.mobile-nav-toggle')
+    if (!navbar || !toggle) return
+    navbar.classList.toggle('navbar-mobile', open)
+    toggle.classList.toggle('bi-list', !open)
+    toggle.classList.toggle('bi-x', open)
+    toggle.setAttribute('aria-expanded', String(open))
+    toggle.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu')
+    document.body.classList.toggle('mobile-menu-open', open)
+  }
+
+  on('click', '.mobile-nav-toggle', function() {
+    setMobileMenu(!select('#navbar').classList.contains('navbar-mobile'))
+  })
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && select('#navbar')?.classList.contains('navbar-mobile')) {
+      setMobileMenu(false)
+      select('.mobile-nav-toggle').focus()
+    }
+  })
+
+  window.matchMedia('(min-width: 1200px)').addEventListener('change', (event) => {
+    if (event.matches) setMobileMenu(false)
   })
 
   /**
@@ -142,10 +163,7 @@
 
       let navbar = select('#navbar')
       if (navbar.classList.contains('navbar-mobile')) {
-        navbar.classList.remove('navbar-mobile')
-        let navbarToggle = select('.mobile-nav-toggle')
-        navbarToggle.classList.toggle('bi-list')
-        navbarToggle.classList.toggle('bi-x')
+        setMobileMenu(false)
       }
       scrollto(this.hash)
     }

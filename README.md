@@ -12,6 +12,7 @@ O sistema permite:
 - Registro de medições vinculadas a um dado biomédico.
 - Upload de mídias (imagem/PDF) vinculadas a um dado biomédico.
 - Filtros de listagem por relacionamento.
+- Dashboard de contagens e evolução dos valores das medições por dado biomédico e período.
 
 ## 2. Stack e requisitos
 
@@ -171,3 +172,29 @@ Checklist rápido de validação funcional:
 4. Criar categoria e dado biomédico.
 5. Registrar medição.
 6. Criar categoria de mídia e enviar um anexo.
+
+## 7. Evolução dos valores das medições
+
+O gráfico **Medições por dia** apresenta uma linha por dado biomédico da conta, com cores e legendas próprias. Cada ponto indica a quantidade de registros daquele dado na data, incluindo medições textuais. As linhas compartilham as datas em ordem cronológica; quando um dado não tem medições em uma dessas datas, sua contagem é zero. Dados ainda sem medições também são incluídos com contagens zero. Dias sem nenhuma medição na conta não são acrescentados ao eixo. A legenda permite exibir ou ocultar cada linha.
+
+Em `/home`, o painel **Evolução das medições** permite selecionar um dado biomédico da conta e, opcionalmente, uma data inicial e uma data final. Os limites incluem o dia inteiro. **Todo o histórico** remove os filtros de data e mantém o dado selecionado. Esses filtros afetam somente o novo painel; os indicadores e gráficos de contagens continuam representando o histórico da conta.
+
+Cada medição numérica aparece como um ponto, em ordem de data e hora. Medições do mesmo dia ou horário são preservadas individualmente. O eixo temporal respeita os intervalos entre registros, e os detalhes do ponto mostram nome, valor original, unidade e data e hora. A unidade é a cadastrada no dado biomédico. O gráfico utiliza o mesmo fuso configurado na aplicação para evitar deslocamentos provocados pelo fuso do navegador. Uma única medição aparece como um ponto; dias sem registro não recebem valores zero.
+
+O campo `medicao.valor` continua textual, sem migração ou alteração dos registros existentes. Para o gráfico, são aceitos números inteiros ou decimais, com vírgula ou ponto como separador decimal, sinal opcional e espaços nas extremidades. Não são inferidos separadores de milhar, unidades, faixas, notação científica ou valores compostos. Exemplos como `82,4`, `82.4`, `0` e `-0,5` são representados; `positivo`, `120/80`, `95 mg/dL` e `1.234,56` continuam apenas na listagem. O painel informa quantos registros do período não puderam ser representados.
+
+A renderização mantém o Chart.js 4.4.7 e utiliza Luxon 3.5.0 com chartjs-adapter-luxon 1.3.1, carregados por CDN. Não há interpretação clínica automática nem conversão de unidades. Os testes incluem isolamento entre contas, limites de datas, ordenação, estados sem dados e conversão dos valores:
+
+```bash
+php artisan test --filter="MeasurementEvolutionTest|MeasurementValueTest"
+```
+
+## 8. Medições de demonstração em julho de 2026
+
+Para a conta existente `dashboard.teste@example.com`, o seeder abaixo acrescenta 100 medições sintéticas em julho de 2026. Utiliza os cinco dados biomédicos já cadastrados, com quantidades de 1 a 3 por dia em datas variadas e valores numéricos diferentes. O Hemograma permanece reservado às mídias. Os registros anteriores são preservados, e repetir o comando não duplica o lote.
+
+```bash
+php artisan db:seed --class=DashboardJulyMeasurementsSeeder
+```
+
+O lote contém 17 medições de colesterol total, 23 de frequência cardíaca, 22 de glicemia, 16 de peso corporal e 22 de pressão arterial sistólica. A conta e os dados biomédicos precisam existir previamente, com suas unidades de medida esperadas.
