@@ -22,16 +22,15 @@
     <link href="{{ asset('assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
 
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/responsive.css') }}" rel="stylesheet">
 </head>
 
-<body>
+<body class="app-shell">
     <div id="topbar" class="d-flex align-items-center fixed-top">
         <div class="container d-flex justify-content-between">
             <div class="contact-info d-flex align-items-center">
-                <i class="bi bi-person"></i>
-                {{ auth()->user()->nome ?? auth()->user()->name ?? 'Usuário' }}
-                <i class="bi bi-envelope ms-3"></i>
-                {{ auth()->user()->email ?? '-' }}
+                <span class="account-item"><i class="bi bi-person" aria-hidden="true"></i><span>{{ auth()->user()->nome ?? auth()->user()->name ?? 'Usuário' }}</span></span>
+                <span class="account-item"><i class="bi bi-envelope" aria-hidden="true"></i><span>{{ auth()->user()->email ?? '-' }}</span></span>
             </div>
         </div>
     </div>
@@ -40,9 +39,9 @@
         <div class="container d-flex align-items-center">
             <h1 class="logo me-auto"><a href="{{ route('principal') }}">Dados Biomédicos</a></h1>
             <nav id="navbar" class="navbar order-last order-lg-0">
-                <ul>
+                <ul id="navigation-links">
                     <li><a class="nav-link" href="{{ route('principal') }}">Início</a></li>
-                    <li><a class="nav-link" href="{{ route('profile.show') }}">Meu perfil</a></li>
+                    <li><a class="nav-link" href="{{ route('home') }}">Dashboard</a></li>
                     <li class="dropdown">
                         <a href="#"><span>Cadastros</span> <i class="bi bi-chevron-down"></i></a>
                         <ul>
@@ -68,19 +67,16 @@
                         </ul>
                     </li>
                 </ul>
-                <i class="bi bi-list mobile-nav-toggle"></i>
+                <button type="button" class="bi bi-list mobile-nav-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navigation-links"></button>
             </nav>
-            <form method="POST" action="{{ route('logout') }}" class="ms-3">
-                @csrf
-                <button type="submit" class="btn btn-danger fw-semibold px-3">
-                    <i class="bi bi-box-arrow-right me-1"></i>Sair
-                </button>
-            </form>
+            <a href="{{ route('profile.show') }}" class="btn btn-sm btn-primary fw-semibold px-2 ms-3 text-nowrap profile-button">
+                <i class="bi bi-person-circle me-1"></i>Perfil
+            </a>
         </div>
     </header>
 
     <main id="main">
-        <section class="services" style="margin-top: 140px;">
+        <section class="services app-content">
             <div class="container">
                 @if (session('success'))
                     <div class="alert alert-success">{{ session('success') }}</div>

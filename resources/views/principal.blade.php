@@ -22,12 +22,9 @@
     <link href="{{ asset('assets/vendor/swiper/swiper-bundle.min.css') }}" rel="stylesheet">
 
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('assets/css/responsive.css') }}" rel="stylesheet">
 
     <style>
-        #services {
-            margin-top: 175px !important;
-        }
-
         #barra {
             margin: 25px;
         }
@@ -45,22 +42,12 @@
     </style>
 </head>
 
-<body>
+<body class="app-shell principal-page">
     <div id="topbar" class="d-flex align-items-center fixed-top">
         <div class="container d-flex justify-content-between">
             <div class="contact-info d-flex align-items-center">
-                <i class="bi bi-person"></i>
-                {{ auth()->user()->nome ?? auth()->user()->name }}
-                <i class="bi bi-envelope ms-3"></i>
-                {{ auth()->user()->email }}
-            </div>
-            <div class="d-none d-lg-flex social-links align-items-center">
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="btn btn-sm btn-danger fw-semibold">
-                        <i class="bi bi-box-arrow-right me-1"></i>Sair
-                    </button>
-                </form>
+                <span class="account-item"><i class="bi bi-person" aria-hidden="true"></i><span>{{ auth()->user()->nome ?? auth()->user()->name }}</span></span>
+                <span class="account-item"><i class="bi bi-envelope" aria-hidden="true"></i><span>{{ auth()->user()->email }}</span></span>
             </div>
         </div>
     </div>
@@ -69,15 +56,15 @@
         <div class="container d-flex align-items-center">
             <h1 class="logo me-auto">
                 <a href="{{ route('principal') }}">
-                    Gerenciador Pessoal <br>
-                    de Dados Biomédicos
+                    <span class="d-none d-xl-inline">Gerenciador Pessoal <br> de Dados Biomédicos</span>
+                    <span class="d-xl-none">Dados Biomédicos</span>
                 </a>
             </h1>
 
             <nav id="navbar" class="navbar order-last order-lg-0">
-                <ul>
+                <ul id="navigation-links">
                     <li><a class="nav-link scrollto active" href="#hero">Início</a></li>
-                    <li><a class="nav-link" href="{{ route('profile.show') }}">Meu perfil</a></li>
+                    <li><a class="nav-link" href="{{ route('home') }}">Dashboard</a></li>
                     <li class="dropdown"><a href="#"><span>Cadastros</span> <i class="bi bi-chevron-down"></i></a>
                         <ul>
                             <li><a class="scrollto" href="#services">Atalhos da página inicial</a></li>
@@ -102,10 +89,12 @@
                         </ul>
                     </li>
                 </ul>
-                <i class="bi bi-list mobile-nav-toggle"></i>
+                <button type="button" class="bi bi-list mobile-nav-toggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navigation-links"></button>
             </nav>
 
-            <a href="#appointment" class="appointment-btn scrollto"><span class="d-none d-md-inline">Registrar medição</span></a>
+            <a href="{{ route('profile.show') }}" class="btn btn-sm btn-primary fw-semibold px-2 ms-3 text-nowrap profile-button">
+                <i class="bi bi-person-circle me-1"></i>Perfil
+            </a>
         </div>
     </header>
 
@@ -114,7 +103,10 @@
             <h1>
                 Seja bem-vindo ao seu <br> Gerenciador Pessoal <br> de Dados Biomédicos
             </h1>
-            <a href="#services" class="btn-get-started scrollto">Inserir dados</a>
+            <div class="d-flex flex-wrap gap-2">
+                <a href="#services" class="btn-get-started scrollto">Inserir dados</a>
+                <a href="#appointment" class="btn-get-started scrollto">Registrar medição</a>
+            </div>
         </div>
     </section>
 
@@ -265,7 +257,7 @@
 
                 <div class="card border-0 shadow-sm mt-4">
                     <div class="card-body p-4">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="d-flex flex-wrap gap-2 justify-content-between align-items-center mb-3">
                             <h5 class="mb-0">Últimas medições</h5>
                             <a href="{{ route('medicao.index') }}" class="btn btn-sm btn-outline-primary">Ver todas</a>
                         </div>

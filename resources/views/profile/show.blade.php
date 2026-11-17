@@ -87,7 +87,9 @@
                     <a href="{{ route('principal') }}" class="btn btn-light">Voltar</a>
                     <form method="POST" action="{{ route('logout') }}" class="m-0">
                         @csrf
-                        <button type="submit" class="btn btn-danger">Sair da conta</button>
+                        <button type="submit" class="btn btn-danger fw-semibold px-3">
+                            <i class="bi bi-box-arrow-right me-1"></i>Sair
+                        </button>
                     </form>
                 </div>
             </div>
