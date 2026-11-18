@@ -1,174 +1,76 @@
-# tcc-heythor
-TCC - Curso Técnico em Informática 2023
+# Gerenciador Pessoal de Dados Biomédicos
 
-## 1. Visão geral
+Aplicação web para organizar medições e arquivos de exames em um histórico pessoal. O próprio usuário cadastra o dado biomédico que deseja acompanhar, como o peso corporal, e acrescenta medições com valor, data e hora. Assim, pode consultar exames e comparar medições ao longo do tempo sem repetir o cadastro.
 
-O sistema permite:
+O sistema foi desenvolvido como produto mínimo viável (MVP) no Curso Técnico Integrado em Informática do **IFMG – Campus Formiga**, em 2026. **Autor:** Heythor Daniel Rodrigues de Assis. **Orientador:** Prof. Roger Santos Ferreira.
 
-- Cadastro e login de usuário (paciente).
-- Cadastro de categorias e categorias de mídia.
-- Cadastro de especialidades e médicos.
-- Cadastro de dados biomédicos vinculados ao paciente logado.
-- Registro de medições vinculadas a um dado biomédico.
-- Upload de mídias (imagem/PDF) vinculadas a um dado biomédico.
-- Filtros de listagem por relacionamento.
-- Dashboard de contagens e evolução dos valores das medições por dado biomédico e período.
+## Uso da aplicação
 
-## 2. Stack e requisitos
+1. **Crie uma conta** com nome, e-mail e senha. Após entrar, use o menu **Perfil** para consultar ou atualizar suas informações.
+2. **Cadastre um dado biomédico** com nome, valor de referência e unidade de medida. A associação a um médico e a uma categoria é opcional. Cada conta gerencia seus próprios médicos, especialidades, categorias de dados biomédicos e categorias de mídia.
+3. **Registre uma medição ou anexe um exame.** A medição guarda o nome, o valor, a data e a hora. O anexo fica associado ao dado biomédico e a uma categoria de mídia.
+4. **Consulte o histórico** pelas listagens com busca, filtros e paginação. Elas permitem editar ou excluir registros. No menu **Dashboard**, é possível comparar as quantidades registradas e acompanhar a evolução dos valores numéricos.
 
-- PHP `8.2+` (recomendado `8.3`)
-- Composer `2+`
-- Node.js `18+` (ou `20+`)
-- NPM
-- Banco de dados:
-    - MySQL 8+
+<details>
+<summary>Requisitos especificados no artigo</summary>
 
-Frameworks e libs principais:
+| Requisitos | Escopo |
+| --- | --- |
+| RF01 a RF03 | Cadastro de conta, autenticação, encerramento da sessão e atualização do perfil. |
+| RF04 e RF05 | Gerenciamento dos médicos, especialidades e categorias de cada conta. |
+| RF06 a RF08 | Gerenciamento de dados biomédicos, medições e arquivos de exames. |
+| RF09 | Busca, filtros e paginação nas listagens. |
+| RF10 a RF12 | Indicadores da conta, gráficos de contagem e evolução dos valores por dado biomédico e período. |
+| RNF01 e RNF02 | Verificação de pertencimento no servidor, inclusive nas associações entre registros e no acesso aos anexos privados. |
+| RNF03 e RNF04 | Armazenamento das senhas como *hash*, validação das entradas e integridade referencial no banco. |
+| RNF05 e RNF06 | Adaptação das interfaces a diferentes larguras, navegação e paginação em português brasileiro, identificação dos campos e mensagens sobre as operações. |
+| RNF07 a RNF09 | Separação entre modelos, visões e controladores, migrações do banco, versionamento com Git, testes em ambiente separado e execução local pelo navegador. |
 
-- Laravel `12`
-- Laravel UI (autenticação)
-- Bootstrap (tema Medilab adaptado)
+</details>
 
-## 3. Estrutura do projeto
+## Dashboard
 
-- `app/Models`: entidades de domínio.
-- `app/Http/Controllers`: controladores dos módulos CRUD.
-- `database/migrations`: estrutura oficial do banco.
-- `resources/views`: telas Blade do sistema.
-- `public/assets`: arquivos estáticos do tema.
-- `routes/web.php`: rotas web autenticadas.
+Os cartões mostram o total de dados biomédicos da conta, o total de medições e a data e a hora da última medição. O painel usa Chart.js para apresentar quatro gráficos.
 
-## 4. Estrutura do banco de dados
+| Gráfico | O que mostra |
+| --- | --- |
+| Evolução das medições | Cada ponto representa um valor numérico do dado selecionado, na data e na hora da medição. O filtro de período inclui as datas inicial e final. |
+| Medições por dia | Uma linha por dado biomédico. Nas datas em que a conta tem medições, cada linha mostra sua própria contagem, inclusive zero. |
+| Dados por categoria | Distribuição dos dados biomédicos por categoria. Os registros sem classificação aparecem em “Sem categoria”. |
+| Medições por dado biomédico | Uma barra para cada dado biomédico com pelo menos uma medição. |
 
-Modelagem do banco
+O filtro de período afeta o gráfico de evolução e seu contador. Uma medição com valor composto, como `120/80`, permanece na listagem e entra no total do período. Apenas valores que representam um único número geram pontos no gráfico, inclusive decimais escritos com vírgula ou ponto.
 
-### 4.1 Tabelas de domínio
+## Arquivos de exames e acesso por conta
 
-- `users`
-    - `id`, `data_nascimento`, `nome`, `email`, `cpf`, `celular`, `password`...
-- `categoria`
-    - `id`, `nome`, `user_id`
-- `categoria_midia`
-    - `id`, `nome`, `user_id`
-- `especialidade`
-    - `id`, `nome`, `user_id`
-- `medico`
-    - `id`, `nome`, `crm`, `contato`, `especialidade_id`, `user_id`
-- `dado_biomedico`
-    - `id`, `nome`, `medico_id`, `paciente_id`, `categoria_id`, `valor_referencia`, `unidade_medida`
-- `medicao`
-    - `id`, `nome`, `valor`, `dado_biomedico_id`, `data_hora`
-- `midia`
-    - `id`, `anexo`, `tipo`, `dado_biomedico_id`, `categoria_midia_id`
+O módulo de mídias aceita **JPEG, PNG e PDF de até 5.120 KB por arquivo**. O conteúdo fica em `storage/app/private/anexos/midias`. O MySQL guarda o caminho relativo e as associações do anexo.
 
-### 4.2 Relacionamentos principais
+Ao abrir **Visualizar**, o servidor verifica a sessão e se o dado biomédico associado pertence à conta. Isso também se aplica ao acesso direto pelo link. Um visitante é encaminhado ao login e outra conta autenticada recebe a resposta HTTP 404. Ao substituir um arquivo, a aplicação preserva o original até que o novo caminho seja gravado no banco.
 
-- `users (1) -> (N) dado_biomedico`
-- `users (1) -> (N) categoria / especialidade / medico / categoria_midia`
-- `medico (1) -> (N) dado_biomedico`
-- `categoria (1) -> (N) dado_biomedico`
-- `especialidade (1) -> (N) medico`
-- `dado_biomedico (1) -> (N) medicao`
-- `dado_biomedico (1) -> (N) midia`
-- `categoria_midia (1) -> (N) midia`
+## Ambiente e execução local
 
-### 4.3 Controle de acesso aos dados
+| Componente | Ambiente utilizado no projeto |
+| --- | --- |
+| Aplicação | Windows, PHP 8.2.12, Laravel 12.36.1 e Eloquent |
+| Banco de dados | MySQL Community Server 8.0.42 |
+| Interface | Blade, Bootstrap 5.3.2, Medilab e Chart.js |
+| Dependências e recursos da interface | Composer, Node.js, npm e Vite 7.1.12 |
+| Testes | PHPUnit 11.5.43 e SQLite em memória |
 
-A propriedade dos dados do usuário é controlada por `dado_biomedico.paciente_id`.
+Para preparar a aplicação, consulte o [guia de execução local](docs/EXECUCAO_LOCAL.md). Com as dependências instaladas e a conexão com o MySQL configurada no arquivo `.env`, inicie o servidor na raiz do projeto e abra o endereço indicado no terminal em um navegador com JavaScript habilitado.
 
-- Módulos `medicao` e `midia` são filtrados via relacionamento com `dado_biomedico` do usuário logado.
-- Os cadastros de apoio (`categoria`, `especialidade`, `medico`, `categoria_midia`) pertencem a uma conta pelo campo obrigatório `user_id`. As listagens, buscas, formulários, filtros, edições e exclusões utilizam apenas os cadastros do usuário autenticado.
-- A conta proprietária é definida no servidor. A validação também exige que o médico, a especialidade e as categorias selecionados pertençam à mesma conta, impedindo associações entre usuários por IDs enviados manualmente.
-- Anexos de exames são armazenados no disco privado `anexos`, em `storage/app/private/anexos/midias`. A visualização usa `GET /midia/{id}/anexo`, com autenticação e verificação do proprietário do dado biomédico. Outra conta recebe HTTP 404; visitantes são encaminhados ao login.
-
-## 5. Execução local
-
-### 5.1 Instalação
-
-composer install
-npm install
-cp .env.example .env
-php artisan key:generate
-
-Ajuste no `.env` para desenvolvimento local:
-
-```env
-APP_URL=http://127.0.0.1:8000
-SESSION_DRIVER=file
-CACHE_STORE=file
-QUEUE_CONNECTION=sync
-```
-
-### 5.2 Banco com MySQL
-
-1. Crie um banco vazio no MySQL.
-2. Ajuste `.env`:
-
-```env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=database
-DB_USERNAME=usuario
-DB_PASSWORD=senha
-```
-
-3. Rode as migrations:
-
-```bash
-php artisan migrate:fresh
-```
-
-### 5.3 Subir a aplicação
-
-```bash
+```shell
 php artisan serve
 ```
 
-Acesse:
+## Testes e resultados
 
-- `http://127.0.0.1:8000`
+Para executar a suíte na raiz do projeto, use o comando abaixo. A configuração dos testes está em `phpunit.xml`.
 
-### 5.4 Atualização de anexos anteriormente públicos
-
-Para uma instalação existente, após atualizar o código, pause os acessos durante a transferência:
-
-```bash
-php artisan down
-php artisan config:clear
-php artisan route:clear
-php artisan midias:proteger-anexos --dry-run
-php artisan midias:proteger-anexos
-php artisan up
-```
-
-O comando transfere os arquivos de `storage/app/public/midias` para o disco privado, incluindo arquivos sem registro. Confere o conteúdo com SHA-256 antes de remover cada cópia pública, preservando os caminhos relativos no banco. Pode ser executado novamente e interrompe a operação ao encontrar arquivos ausentes ou conteúdos conflitantes. Resolva os erros apresentados antes de liberar o acesso. O modo de manutenção não bloqueia arquivos estáticos enquanto as cópias públicas ainda existem.
-
-Após a transferência, os endereços antigos `/storage/midias/...` deixam de disponibilizar os arquivos. O link `public/storage`, se utilizado por outros recursos, pode permanecer; não crie links públicos para `storage/app/private`. Inclua a pasta privada no backup. Para instalações novas, os uploads já são privados e não dependem de `storage:link`.
-
-Os testes de anexos e transferência usam armazenamento simulado e SQLite em memória:
-
-```bash
+```shell
 php artisan test
 ```
 
-### 5.5 Individualização dos cadastros de apoio existentes
+A execução relatada no artigo registrou **90 testes aprovados e 481 asserções**. Dos 90 testes, 89 verificaram comportamentos da aplicação e um correspondeu ao teste unitário de exemplo. Os cenários abrangeram o cadastro de usuários, o isolamento entre contas, o gerenciamento de anexos privados e a preparação dos dados dos gráficos.
 
-A migração `2026_11_16_000001_scope_support_records_to_users` adiciona `user_id` com chave estrangeira para `users` às quatro tabelas de apoio. Em uma instalação existente, faça backup do banco e execute `php artisan migrate` com os acessos temporariamente pausados.
-
-Os vínculos com dados biomédicos e mídias identificam as contas que já utilizam cada cadastro. Registros utilizados por várias contas recebem cópias independentes, e suas associações são ajustadas para preservar as informações de cada usuário. Médicos e suas especialidades permanecem na mesma conta. Medições, conteúdo dos anexos e informações das contas não são alterados.
-
-Se houver um cadastro legado sem vínculo que permita identificar seu proprietário, a migração interrompe antes de alterar o esquema. Esse caso exige definir explicitamente a destinação do cadastro; a migração não o apaga nem escolhe uma conta arbitrária. Novos cadastros já recebem o proprietário no momento da criação, mesmo antes de serem utilizados.
-
-O rollback remove as novas colunas, mas preserva as cópias e os relacionamentos resultantes. Para recuperar exatamente a organização anterior, utilize o backup anterior à migração.
-
-## 6. Fluxo de uso recomendado/Qualidade e validação
-
-Checklist rápido de validação funcional:
-
-1. Registrar usuário em `/register`.
-2. Criar especialidade.
-3. Criar médico vinculado à especialidade.
-4. Criar categoria e dado biomédico.
-5. Registrar medição.
-6. Criar categoria de mídia e enviar um anexo.
+Os testes de funcionalidade utilizaram SQLite em memória e armazenamento simulado para os anexos. A conferência visual abrangeu telas representativas no Chrome nas larguras de 320, 360, 440 e 1280 pixels. Os trabalhos futuros incluem testar as operações com MySQL e as interações com os gráficos no navegador, além de avaliar com usuários as tarefas de registrar uma medição, localizar um exame e interpretar um gráfico.
